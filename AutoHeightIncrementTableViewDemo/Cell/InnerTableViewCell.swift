@@ -2,21 +2,22 @@
 //  InnerTableViewCell.swift
 //  AutoHeightIncrementTableViewDemo
 //
-//  Created by Wholly-iOS on 22/09/18.
+//  Created by AshvinGudaliya on 22/09/18.
 //  Copyright © 2018 Ashvin Gudaliya. All rights reserved.
 //
 
 import UIKit
 
+protocol InnerTableViewCellDelegate: class {
+    func innerTableView(forIndex: IndexPath, atSize size: CGFloat)
+}
+
 class InnerTableViewCell: UITableViewCell {
 
     @IBOutlet weak var innerTableView: AGTableView!
     
-    var outerRow: Int = 0 {
-        didSet {
-            self.innerTableView.reloadData()
-        }
-    }
+    private var indexPath: IndexPath!
+    weak var delegate: InnerTableViewCellDelegate?
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -26,35 +27,39 @@ class InnerTableViewCell: UITableViewCell {
         self.innerTableView.delegate = self
         self.innerTableView.dataSource = self
     }
-
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
-    }
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        
-        self.innerTableView.layoutSubviews()
-        self.superTableView?.beginUpdates()
-        self.superTableView?.endUpdates()
+        self.updateOuterTableView()
     }
     
+    func configuration(indexPath: IndexPath, delegate: InnerTableViewCellDelegate) {
+        self.indexPath = indexPath
+        self.delegate = delegate
+        
+        innerTableView.reloadData {
+            self.updateOuterTableView()
+        }
+    }
+    
+    func updateOuterTableView() {
+        self.delegate?.innerTableView(forIndex: indexPath, atSize: self.innerTableView.contentSize.height)
+    }
 }
 
 extension InnerTableViewCell: UITableViewDelegate, UITableViewDataSource {
-    func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
-    }
-    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 5
+        return indexPath?.section ?? 5
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "UITableViewCell") ?? UITableViewCell(style: .default, reuseIdentifier: "UITableViewCell")
-        cell.textLabel?.text = "Outer Section: \(outerRow)  innerRow: \(indexPath.row)"
+        cell.textLabel?.text = "Outer Section: \(self.indexPath.row)  innerRow: \(indexPath.row)"
+        self.updateOuterTableView()
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 45
     }
 }

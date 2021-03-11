@@ -2,7 +2,7 @@
 //  AppDelegate.swift
 //  AutoHeightIncrementTableViewDemo
 //
-//  Created by Wholly-iOS on 22/09/18.
+//  Created by AshvinGudaliya on 22/09/18.
 //  Copyright © 2018 Ashvin Gudaliya. All rights reserved.
 //
 

@@ -2,7 +2,7 @@
 //  AGTableView.swift
 //  BaseProject
 //
-//  Created by Wholly-iOS on 22/08/18.
+//  Created by AshvinGudaliya on 22/08/18.
 //  Copyright © 2018 AshvinGudaliya. All rights reserved.
 //
 
@@ -60,6 +60,14 @@ extension UITableView {
         let id = String(describing: cellClass.self)
         let nib = UINib(nibName: id, bundle: nil)
         register(nib, forCellReuseIdentifier: id)
+    }
+    
+    func reloadData(completion: @escaping () -> Void) {
+        UIView.animate(withDuration: 0) {
+            self.reloadData()
+        } completion: { _ in
+            completion()
+        }
     }
 }
 
