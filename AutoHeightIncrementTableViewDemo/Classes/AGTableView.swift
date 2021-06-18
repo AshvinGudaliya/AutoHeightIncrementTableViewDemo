@@ -37,8 +37,9 @@ class AGTableView: UITableView {
             self.nsHeightConstraint?.constant = self.contentSize.height
         }
         else{
-            fatalError("Set a nsHeightConstraint to set contentSize with same")
+            self.heightAnchor.constraint(equalToConstant: self.contentSize.height).isActive = true
         }
+        self.setNeedsDisplay()
     }
 }
 
